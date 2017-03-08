@@ -4,95 +4,148 @@
  c. Rekenkundig	expressies	(+,-,*,/,%,()	).
  d. Logische	expressies	(<,	<=,	=,	!=,	>=,	>,	or,	and,	not).
  e. Conditional	branching	(denk	aan	bijvoorbeeld	een	if/else-if/else	statement).
- TODO f. Looping	statement(s)	(bijvoorbeeld	while	of	for).
+ f. Looping	statement(s)	(bijvoorbeeld	while	of	for).
  g. Functies	met	parameters	en	return	type(s).
- TODO ?? h. Ondersteuning	voor	globale	variabelen.
- TODO i. Ondersteuning	voor	het	printen	van	expressies	en	variabelen naar	de	console.
+ h. Ondersteuning	voor	globale	variabelen.
+ i. Ondersteuning	voor	het	printen	van	expressies	en	variabelen naar	de	console.
  TODO j. Ondersteuning	voor	het	lezen	van	gebruikersinvoer.
 */
 
 grammar Grammar;
 
+/*   Lexical rules   */
+// statements
+IF   : 'IF' ;
+ELSEIF : 'ELSE IF';
+ELSE: 'ELSE';
+WHILE: 'WHILE';
+PRINT: 'PRINT';
+RETURN: 'RETURN';
+
+// class def
+END: 'END';
+CLASS: 'CLASS';
+CLASSNAME: [A-Z][a-z|A-Z]+;
+
+// variable id
+ID: [a-z][a-z|A-Z]*;
+
+// datatypes
+INT : [0-9]+;
+CHAR : [a-z|A-Z]+;
+BOOLEAN : 'true'|'false';
+
+// rek operators
+MULT  : '*' ;
+DIV   : '/' ;
+PLUS  : '+' ;
+MINUS : '-' ;
+MOD : '%';
+
+// logische operators
+LST : '<';
+LSTEQL : '<=';
+EQL : '==';
+NEQL : '!=';
+GRTEQL : '>=';
+GRT : '>';
+OR : 'OR';
+AND : 'AND';
+NOT : 'NOT';
+
+// skipped
+COMMENT: '//' ~( '\r' | '\n' )* -> skip;
+WS: [\t\r\n ]+ -> skip;
+
+
+/*   Grammar rules   */
 // class definitie
-prog: 'CLASS' CLASSNAME '{' (NEWLINE)* (variable NEWLINE)* (NEWLINE)* (method NEWLINE)* (NEWLINE)* '}END' | (NEWLINE)*;
+prog: CLASS CLASSNAME '{' (variable)* (method)* '}' END;
 
 // ondersteuning voor variabelen
 variable: normVariable | arrayVariable;
 
 // standaard variabelen
-normVariable: dataType NAME (normVariableDeclaration)? ';';
+normVariable: dataType ID (normVariableDeclaration)? ';';
 normVariableDeclaration: '=' normVariableInitializer;
-normVariableInitializer: expr | INT | CHAR;
+normVariableInitializer: expr | CHAR;
 
 // array variabelen
-arrayVariable: dataType '[]' NAME (arrayDeclaration)? ';';
+arrayVariable: dataType '[]' ID (arrayDeclaration)? ';';
 arrayDeclaration: '=' arrayInitializer;
-arrayInitializer: 'new' dataType | '{' INT (',' INT)* '}';
+arrayInitializer: 'new' dataType '[' INT ']' | '{' INT (',' INT)* '}';
 
 // ondersteuning voor methoden
-parameter: dataType NAME;
+parameter: dataType ID;
 parameterList: parameter (',' parameter)*;
 modifier: 'PUBLIC' | 'PRIVATE';
 returnType: dataType | 'VOID';
-method: modifier returnType NAME '(' parameterList ')' '{' (content | NEWLINE)*'}';
+method: modifier returnType ID '(' parameterList? ')' '{' content '}';
 
 // data types
 dataType: 'INT'
         | 'CHAR'
+        | 'BOOLEAN'
         ;
 
 // expressies
-expr: rekExpr | addExpr | logExpr;
+expr: rekExpr
+//    | addExpr
+    | BOOLEAN
+    | INT
+    | ID;
 
 // 1.) rekenkundige expressies
-// Addition
-addExpr: addExpr('+'|'-') addExpr
-        | INT
-        | '(' addExpr ')'
-        ;
+//addExpr: left=addExpr() right=addExpr   #opExpr // addition
+//        | INT                                       #atomExpr
+//        | ID                                        #idExpr
+//        | '(' addExpr ')'                           #parenExpr
+//        ;
 
-// Multiplication
-rekExpr: rekExpr('*'|'/'|'%')rekExpr
-       | INT
-       | '(' rekExpr ')'
+rekExpr: left=rekExpr(PLUS | MINUS | MULT | DIV | MOD)right=rekExpr  #opExpr // multiplication
+       | INT                                                         #atomExpr
+       | ID                                                          #idExpr
+       | '(' rekExpr ')'                                             #parenExpr
        ;
 
 // 2.) logische expressies
-logExpr: logExpr('<'|'<='|'=='|'!='|'>='|'>'|'OR'|'AND'|'NOT')logExpr
+logExpr: left=logExpr(LST | LSTEQL | EQL | NEQL | GRTEQL | GRT | OR | AND | NOT)right=logExpr
        | INT
+       | ID
        | '(' logExpr ')'
        ;
 
-// Content o
-content: (statement)* (addExpr)* ';' (NEWLINE)*;
+// methoden inhoud
+content: (statement
+       | ID normVariableDeclaration ';'
+       | ID arrayDeclaration ';')* returnStatement
+       ;
 
-statement: ifStatement | whileStatement;
+// ondersteuning voor verschillende soorten statements
+statement: ifStatement | whileStatement | printStatement;
 
+// ondersteuning voor de content van een bepaalde statement (bijv. if of de while)
+contstatement: (statement
+             | ID normVariableDeclaration ';'
+             | ID arrayDeclaration ';')*;
+
+// if statement
 ifStatement
-    :   'IF' '(' ifCondition ')' '{' expr '}'
-        ('ELSE IF' '(' ifCondition ')' '{' expr '}')*
-        ('ELSE' '{' expr '}')?
+    :   IF '(' condition ')' '{' contstatement '}'
+        (ELSEIF '(' condition ')' '{' contstatement '}')*
+        (ELSE '{' contstatement '}')?
     ;
 
+// while statement
 whileStatement
-	:	'WHILE' '(' condition ')' '{' statement | (NEWLINE)* '}'
+	:	WHILE '(' condition ')' '{' contstatement '}'
 	;
 
-ifCondition: expr | BOOLEAN | VAR;
+// print statement
+printStatement: PRINT expr ';';
+
+// return statement
+returnStatement: RETURN expr ';';
+
+// statement conditie
 condition: logExpr | BOOLEAN;
-
-
-
-CLASSNAME: [A-Z][a-z|A-Z]+;
-BOOLEAN : 'true'|'false';
-NAME: [a-z][a-z|A-Z]*;
-NEWLINE : [\r\n]+;
-RETURN : 'return';
-
-INT : [0-9]+;
-CHAR : [a-z|A-Z]+;
-
-
-VAR : [a-z]+;
-
-WS : ' ' -> skip;
