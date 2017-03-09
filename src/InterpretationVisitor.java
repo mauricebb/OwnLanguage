@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
  *
  * Created by maurice_2 on 16-2-2017.
  */
-public class InterpretationVisitor extends GrammarBaseVisitor<Object> {
+class InterpretationVisitor extends GrammarBaseVisitor<Object> {
 
     @Override
     public Object visitOpExpr(GrammarParser.OpExprContext ctx) {
