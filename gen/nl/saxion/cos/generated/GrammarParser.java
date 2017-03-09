@@ -948,6 +948,7 @@ public class GrammarParser extends Parser {
 	}
 	public static class OpExprContext extends RekExprContext {
 		public RekExprContext left;
+		public Token op;
 		public RekExprContext right;
 		public List<RekExprContext> rekExpr() {
 			return getRuleContexts(RekExprContext.class);
@@ -1067,9 +1068,10 @@ public class GrammarParser extends Parser {
 					setState(161);
 					if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
 					setState(162);
+					((OpExprContext)_localctx).op = _input.LT(1);
 					_la = _input.LA(1);
 					if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << MULT) | (1L << DIV) | (1L << PLUS) | (1L << MINUS) | (1L << MOD))) != 0)) ) {
-					_errHandler.recoverInline(this);
+						((OpExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 					}
 					else {
 						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -1099,10 +1101,49 @@ public class GrammarParser extends Parser {
 	}
 
 	public static class LogExprContext extends ParserRuleContext {
-		public LogExprContext left;
-		public LogExprContext right;
-		public TerminalNode INT() { return getToken(GrammarParser.INT, 0); }
+		public LogExprContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_logExpr; }
+	 
+		public LogExprContext() { }
+		public void copyFrom(LogExprContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class LogparenExprContext extends LogExprContext {
+		public LogExprContext logExpr() {
+			return getRuleContext(LogExprContext.class,0);
+		}
+		public LogparenExprContext(LogExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GrammarVisitor ) return ((GrammarVisitor<? extends T>)visitor).visitLogparenExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class LogIdExprContext extends LogExprContext {
 		public TerminalNode ID() { return getToken(GrammarParser.ID, 0); }
+		public LogIdExprContext(LogExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GrammarVisitor ) return ((GrammarVisitor<? extends T>)visitor).visitLogIdExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class LogAtomExprContext extends LogExprContext {
+		public TerminalNode INT() { return getToken(GrammarParser.INT, 0); }
+		public LogAtomExprContext(LogExprContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof GrammarVisitor ) return ((GrammarVisitor<? extends T>)visitor).visitLogAtomExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class LogaExprContext extends LogExprContext {
+		public LogExprContext left;
+		public Token op;
+		public LogExprContext right;
 		public List<LogExprContext> logExpr() {
 			return getRuleContexts(LogExprContext.class);
 		}
@@ -1118,13 +1159,10 @@ public class GrammarParser extends Parser {
 		public TerminalNode OR() { return getToken(GrammarParser.OR, 0); }
 		public TerminalNode AND() { return getToken(GrammarParser.AND, 0); }
 		public TerminalNode NOT() { return getToken(GrammarParser.NOT, 0); }
-		public LogExprContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_logExpr; }
+		public LogaExprContext(LogExprContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof GrammarVisitor ) return ((GrammarVisitor<? extends T>)visitor).visitLogExpr(this);
+			if ( visitor instanceof GrammarVisitor ) return ((GrammarVisitor<? extends T>)visitor).visitLogaExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -1150,18 +1188,28 @@ public class GrammarParser extends Parser {
 			switch (_input.LA(1)) {
 			case INT:
 				{
+				_localctx = new LogAtomExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+
 				setState(170);
 				match(INT);
 				}
 				break;
 			case ID:
 				{
+				_localctx = new LogIdExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(171);
 				match(ID);
 				}
 				break;
 			case T__12:
 				{
+				_localctx = new LogparenExprContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
 				setState(172);
 				match(T__12);
 				setState(173);
@@ -1183,16 +1231,16 @@ public class GrammarParser extends Parser {
 					_prevctx = _localctx;
 					{
 					{
-					_localctx = new LogExprContext(_parentctx, _parentState);
-					_localctx.left = _prevctx;
-					_localctx.left = _prevctx;
+					_localctx = new LogaExprContext(new LogExprContext(_parentctx, _parentState));
+					((LogaExprContext)_localctx).left = _prevctx;
 					pushNewRecursionContext(_localctx, _startState, RULE_logExpr);
 					setState(178);
 					if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
 					setState(179);
+					((LogaExprContext)_localctx).op = _input.LT(1);
 					_la = _input.LA(1);
 					if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LST) | (1L << LSTEQL) | (1L << EQL) | (1L << NEQL) | (1L << GRTEQL) | (1L << GRT) | (1L << OR) | (1L << AND) | (1L << NOT))) != 0)) ) {
-					_errHandler.recoverInline(this);
+						((LogaExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 					}
 					else {
 						if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
@@ -1200,7 +1248,7 @@ public class GrammarParser extends Parser {
 						consume();
 					}
 					setState(180);
-					((LogExprContext)_localctx).right = logExpr(5);
+					((LogaExprContext)_localctx).right = logExpr(5);
 					}
 					} 
 				}

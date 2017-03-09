@@ -95,24 +95,25 @@ expr: rekExpr
     | INT
     | ID;
 
-// 1.) rekenkundige expressies
+
 //addExpr: left=addExpr() right=addExpr   #opExpr // addition
 //        | INT                                       #atomExpr
 //        | ID                                        #idExpr
 //        | '(' addExpr ')'                           #parenExpr
 //        ;
 
-rekExpr: left=rekExpr(PLUS | MINUS | MULT | DIV | MOD)right=rekExpr  #opExpr // multiplication
-       | INT                                                         #atomExpr
-       | ID                                                          #idExpr
-       | '(' rekExpr ')'                                             #parenExpr
+// 1.) rekenkundige expressies
+rekExpr: left=rekExpr op=(PLUS | MINUS | MULT | DIV | MOD) right=rekExpr    #opExpr
+       | INT                                                                #atomExpr
+       | ID                                                                 #idExpr
+       | '(' rekExpr ')'                                                    #parenExpr
        ;
 
 // 2.) logische expressies
-logExpr: left=logExpr(LST | LSTEQL | EQL | NEQL | GRTEQL | GRT | OR | AND | NOT)right=logExpr
-       | INT
-       | ID
-       | '(' logExpr ')'
+logExpr: left=logExpr op=(LST | LSTEQL | EQL | NEQL | GRTEQL | GRT | OR | AND | NOT) right=logExpr  #logaExpr
+       | INT                                                                                        #logAtomExpr
+       | ID                                                                                         #logIdExpr
+       | '(' logExpr ')'                                                                            #logparenExpr
        ;
 
 // methoden inhoud

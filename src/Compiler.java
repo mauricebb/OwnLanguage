@@ -13,29 +13,25 @@ import java.io.IOException;
  */
 public class Compiler {
 
-    public static void evaluate(String fileName) throws IOException {
+    private static void evaluate(String fileName) throws IOException {
+        // Step 1 create InputStream
+        ANTLRInputStream inputStream = new ANTLRFileStream(fileName);
+
+        // Step 2 create lexer
+        GrammarLexer lexer = new GrammarLexer(inputStream);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Step 3 create parser
+        GrammarParser parser = new GrammarParser(tokens);
+        GrammarParser.ProgContext tree = parser.prog();
+
+        // Step 4 type checking
         try {
-            // Step 1 create InputStream
-            ANTLRInputStream inputStream = new ANTLRFileStream(fileName);
-
-            // Step 2 create lexer
-            GrammarLexer lexer = new GrammarLexer(inputStream);
-            CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-            // Step 3 create parser
-            GrammarParser parser = new GrammarParser(tokens);
-            GrammarParser.ProgContext tree = parser.prog();
-
-            // Step 4 type checking
-            try {
-                InterpretationVisitor visitor = new InterpretationVisitor();
-                int result = visitor.visitProg(tree);
-                System.out.println("Result " + result);
-            } catch(CompileException ce) {
-                System.err.println("Error: " + ce.getMessage());
-            }
-        } catch (IOException e) {
-            System.out.println("IO Error: " + e.getMessage());
+            InterpretationVisitor visitor = new InterpretationVisitor();
+            Object result = visitor.visitProg(tree);
+            System.out.println("Result " + result);
+        } catch(CompileException ce) {
+            System.err.println("Error: " + ce.getMessage());
         }
     }
 

@@ -129,11 +129,33 @@ public interface GrammarVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIdExpr(GrammarParser.IdExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link GrammarParser#logExpr}.
+	 * Visit a parse tree produced by the {@code logparenExpr}
+	 * labeled alternative in {@link GrammarParser#logExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitLogExpr(GrammarParser.LogExprContext ctx);
+	T visitLogparenExpr(GrammarParser.LogparenExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code logIdExpr}
+	 * labeled alternative in {@link GrammarParser#logExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogIdExpr(GrammarParser.LogIdExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code logAtomExpr}
+	 * labeled alternative in {@link GrammarParser#logExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogAtomExpr(GrammarParser.LogAtomExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code logaExpr}
+	 * labeled alternative in {@link GrammarParser#logExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLogaExpr(GrammarParser.LogaExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link GrammarParser#content}.
 	 * @param ctx the parse tree
