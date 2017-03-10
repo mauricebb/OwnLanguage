@@ -68,7 +68,8 @@ variable: normVariable | arrayVariable;
 // standaard variabelen
 normVariable: dataType ID (normVariableDeclaration)? ';';
 normVariableDeclaration: '=' normVariableInitializer;
-normVariableInitializer: expr | CHAR;
+normVariableInitializer: expr
+                       | CHAR;
 
 // array variabelen
 arrayVariable: dataType '[]' ID (arrayDeclaration)? ';';

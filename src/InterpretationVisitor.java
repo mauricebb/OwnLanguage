@@ -1,12 +1,31 @@
 import nl.saxion.cos.generated.GrammarBaseVisitor;
 import nl.saxion.cos.generated.GrammarParser;
 
+import java.util.HashMap;
+
 /**
  * InterpretationVisitor for type checking.
- *
+ * <p>
  * Created by maurice_2 on 16-2-2017.
  */
 class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
+    private HashMap<String, DataType> memory;
+
+    InterpretationVisitor() {
+        this.memory = new HashMap<>();
+    }
+
+
+
+    @Override
+    public DataType visitNormVariable(GrammarParser.NormVariableContext ctx) {
+        String id = ctx.ID().getText();
+        memory.put(id, visit(ctx.dataType()));
+        //int value = super.visit(ctx.dataType());
+
+        return super.visitNormVariable(ctx);
+    }
+
     @Override
     public DataType visitOpExpr(GrammarParser.OpExprContext ctx) {
         DataType left = visit(ctx.left);
@@ -15,10 +34,25 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         if (left == DataType.INT && right == DataType.INT){
             return DataType.INT;
         } else if (left != DataType.INT){
-            throw new IllegalArgumentException("Left is not of DataType int");
+            throw new IllegalArgumentException("Left is not of DataType INT");
         } else {
-            throw new IllegalArgumentException("Right is not of Datatype int");
+            throw new IllegalArgumentException("Right is not of Datatype INT");
         }
+    }
+
+    @Override
+    public DataType visitAtomExpr(GrammarParser.AtomExprContext ctx) {
+        DataType number = visit(ctx.INT());
+        if (number == DataType.INT){
+            return DataType.INT;
+        } else {
+            throw new IllegalArgumentException("Child is not of DataType INT");
+        }
+    }
+
+    @Override
+    public DataType visitIdExpr(GrammarParser.IdExprContext ctx) {
+        return super.visitIdExpr(ctx);
     }
 
     @Override
