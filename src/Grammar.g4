@@ -49,9 +49,9 @@ EQL : '==';
 NEQL : '!=';
 GRTEQL : '>=';
 GRT : '>';
-OR : 'OR';
-AND : 'AND';
-NOT : 'NOT';
+//OR : 'OR'; TODO
+//AND : 'AND'; TODO
+//NOT : 'NOT'; TODO
 
 // skipped
 COMMENT: '//' ~( '\r' | '\n' )* -> skip;
