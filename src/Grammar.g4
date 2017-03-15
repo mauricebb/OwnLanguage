@@ -32,8 +32,9 @@ ID: [a-z][a-z|A-Z]*;
 
 // datatypes
 INT : [0-9]+;
-CHAR : [a-z|A-Z]+;
+CHAR : [a-zA-Z];
 BOOLEAN : 'true'|'false';
+STRING: '"' (CHAR|INT)+ '"';
 
 // rek operators
 MULT  : '*' ;
@@ -69,7 +70,8 @@ variable: normVariable | arrayVariable;
 normVariable: dataType ID (normVariableDeclaration)? ';';
 normVariableDeclaration: '=' normVariableInitializer;
 normVariableInitializer: expr
-                       | CHAR;
+                       | CHAR
+                       | STRING;
 
 // array variabelen
 arrayVariable: dataType '[]' ID (arrayDeclaration)? ';';

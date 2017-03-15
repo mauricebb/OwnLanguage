@@ -15,8 +15,6 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         this.memory = new HashMap<>();
     }
 
-
-
     @Override
     public DataType visitNormVariable(GrammarParser.NormVariableContext ctx) {
         String id = ctx.ID().getText();
@@ -24,6 +22,17 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         //int value = super.visit(ctx.dataType());
 
         return super.visitNormVariable(ctx);
+    }
+
+    @Override
+    public DataType visitExpr(GrammarParser.ExprContext ctx) {
+        if(visit(ctx.BOOLEAN()) == DataType.BOOL){
+            return DataType.BOOL;
+        } else if(visit(ctx.INT()) == DataType.INT){
+            return DataType.INT;
+        } else {
+            throw new IllegalArgumentException("");
+        }
     }
 
     @Override
@@ -69,7 +78,38 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         }
     }
 
-//    @Override
+    @Override
+    public DataType visitPrintStatement(GrammarParser.PrintStatementContext ctx) {
+        if(visit(ctx.expr()) == DataType.BOOL){
+            return DataType.BOOL;
+        } else if(visit(ctx.expr()) == DataType.INT){
+            return DataType.INT;
+        } else {
+            throw new IllegalArgumentException("Not a DataType");
+        }
+    }
+
+    @Override
+    public DataType visitReturnStatement(GrammarParser.ReturnStatementContext ctx) {
+        if(visit(ctx.expr()) == DataType.BOOL){
+            return DataType.BOOL;
+        } else if(visit(ctx.expr()) == DataType.INT){
+            return DataType.INT;
+        } else {
+            throw new IllegalArgumentException("Not a DataType");
+        }
+    }
+
+    @Override
+    public DataType visitCondition(GrammarParser.ConditionContext ctx) {
+        if(visit(ctx.BOOLEAN()) == DataType.BOOL){
+            return DataType.BOOL;
+        } else {
+            throw new IllegalArgumentException("Not a DataType");
+        }
+    }
+
+    //    @Override
 //    public Object visitOpExpr(GrammarParser.OpExprContext ctx) {
 //        // get left & right number and the operator
 //        int left = (int) visit(ctx.left);

@@ -3,5 +3,5 @@
  * Created by joost on 10/03/2017.
  */
 public enum DataType {
-    BOOL, INT, DOUBLE, STRING
+    BOOL, INT, DOUBLE, STRING, VOID
 }
