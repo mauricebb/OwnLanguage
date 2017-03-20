@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Represents a compiler
@@ -32,6 +33,15 @@ public class Compiler {
             System.out.println("Result " + result);
         } catch(CompileException ce) {
             System.err.println("Error: " + ce.getMessage());
+        }
+
+        // Step 5 Code Generating
+        try{
+            CodeGenerator generator = new CodeGenerator();
+            ArrayList<String> result = generator.visitProg(tree);
+            System.out.println("Generated: " + result);
+        } catch (CompileException e){
+            System.err.println("Error: " + e.getMessage());
         }
     }
 

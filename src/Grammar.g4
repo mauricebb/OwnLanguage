@@ -89,31 +89,25 @@ method: modifier returnType ID '(' parameterList? ')' '{' content '}';
 dataType: 'INT'
         | 'CHAR'
         | 'BOOLEAN'
+        | 'STRING'
         ;
 
 // expressies
 expr: rekExpr
-//    | addExpr
-    | BOOLEAN
-    | INT
+    | boolExpr
     | ID;
 
-
-//addExpr: left=addExpr() right=addExpr   #opExpr // addition
-//        | INT                                       #atomExpr
-//        | ID                                        #idExpr
-//        | '(' addExpr ')'                           #parenExpr
-//        ;
+boolExpr: BOOLEAN;
 
 // 1.) rekenkundige expressies
 rekExpr: left=rekExpr op=(PLUS | MINUS | MULT | DIV | MOD) right=rekExpr    #opExpr
        | INT                                                                #atomExpr
-       | ID                                                                 #idExpr
+       | variable                                                           #idExpr
        | '(' rekExpr ')'                                                    #parenExpr
        ;
 
 // 2.) logische expressies
-logExpr: left=logExpr op=(LST | LSTEQL | EQL | NEQL | GRTEQL | GRT | OR | AND | NOT) right=logExpr  #logaExpr
+logExpr: left=logExpr op=(LST | LSTEQL | EQL | NEQL | GRTEQL | GRT ) right=logExpr  #logaExpr
        | INT                                                                                        #logAtomExpr
        | ID                                                                                         #logIdExpr
        | '(' logExpr ')'                                                                            #logparenExpr
@@ -152,4 +146,5 @@ printStatement: PRINT expr ';';
 returnStatement: RETURN expr ';';
 
 // statement conditie
-condition: logExpr | BOOLEAN;
+condition: logExpr
+         | BOOLEAN;

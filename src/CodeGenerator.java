@@ -12,10 +12,28 @@ import java.util.HashMap;
  * Created by joost on 15/03/2017.
  */
 class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
-    private HashMap<String, DataType> memory;
+    HashMap<Integer, String> storage;
 
     public CodeGenerator() {
-        memory = new HashMap<>();
+        storage = new HashMap<>();
+    }
+
+
+    @Override
+    public ArrayList<String> visitNormVariable(GrammarParser.NormVariableContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        String name = ctx.ID().getText();
+        if (ctx.normVariableDeclaration() != null){
+
+        }
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitAtomExpr(GrammarParser.AtomExprContext ctx) {
+        ArrayList<String>code = new ArrayList<>();
+        code.add("ldc " + ctx.INT().getText());
+        return code;
     }
 
     @Override
@@ -55,5 +73,9 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
 //            case "AND": return left || right;
         }
         return code;
+    }
+
+    private void Log(String prefix, String message){
+        System.out.println(prefix + ": " + message);
     }
 }

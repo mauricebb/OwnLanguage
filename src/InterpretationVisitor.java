@@ -20,19 +20,18 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         String id = ctx.ID().getText();
         memory.put(id, visit(ctx.dataType()));
         //int value = super.visit(ctx.dataType());
+        //return super.visitNormVariable(ctx);
+        return null;
+    }
 
-        return super.visitNormVariable(ctx);
+    @Override
+    public DataType visitBoolExpr(GrammarParser.BoolExprContext ctx) {
+        return DataType.BOOL;
     }
 
     @Override
     public DataType visitExpr(GrammarParser.ExprContext ctx) {
-        if(visit(ctx.BOOLEAN()) == DataType.BOOL){
-            return DataType.BOOL;
-        } else if(visit(ctx.INT()) == DataType.INT){
-            return DataType.INT;
-        } else {
-            throw new IllegalArgumentException("");
-        }
+        return null;
     }
 
     @Override
@@ -40,9 +39,9 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         DataType left = visit(ctx.left);
         DataType right = visit(ctx.right);
 
-        if (left == DataType.INT && right == DataType.INT){
+        if (left == DataType.INT && right == DataType.INT) {
             return DataType.INT;
-        } else if (left != DataType.INT){
+        } else if (left != DataType.INT) {
             throw new IllegalArgumentException("Left is not of DataType INT");
         } else {
             throw new IllegalArgumentException("Right is not of Datatype INT");
@@ -52,7 +51,7 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
     @Override
     public DataType visitAtomExpr(GrammarParser.AtomExprContext ctx) {
         DataType number = visit(ctx.INT());
-        if (number == DataType.INT){
+        if (number == DataType.INT) {
             return DataType.INT;
         } else {
             throw new IllegalArgumentException("Child is not of DataType INT");
@@ -69,9 +68,9 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         DataType left = visit(ctx.left);
         DataType right = visit(ctx.right);
 
-        if (left == DataType.INT && right == DataType.INT){
+        if (left == DataType.INT && right == DataType.INT) {
             return DataType.BOOL;
-        } else if (left != DataType.INT){
+        } else if (left != DataType.INT) {
             throw new IllegalArgumentException("Left is not of DataType int");
         } else {
             throw new IllegalArgumentException("Right is not of Datatype int");
@@ -80,9 +79,9 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
 
     @Override
     public DataType visitPrintStatement(GrammarParser.PrintStatementContext ctx) {
-        if(visit(ctx.expr()) == DataType.BOOL){
+        if (visit(ctx.expr()) == DataType.BOOL) {
             return DataType.BOOL;
-        } else if(visit(ctx.expr()) == DataType.INT){
+        } else if (visit(ctx.expr()) == DataType.INT) {
             return DataType.INT;
         } else {
             throw new IllegalArgumentException("Not a DataType");
@@ -91,10 +90,12 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
 
     @Override
     public DataType visitReturnStatement(GrammarParser.ReturnStatementContext ctx) {
-        if(visit(ctx.expr()) == DataType.BOOL){
+        if (visit(ctx.expr()) == DataType.BOOL) {
             return DataType.BOOL;
-        } else if(visit(ctx.expr()) == DataType.INT){
+        } else if (visit(ctx.expr()) == DataType.INT) {
             return DataType.INT;
+        } else if (visit(ctx.expr()) == DataType.STRING) {
+            return DataType.STRING;
         } else {
             throw new IllegalArgumentException("Not a DataType");
         }
@@ -102,52 +103,11 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
 
     @Override
     public DataType visitCondition(GrammarParser.ConditionContext ctx) {
-        if(visit(ctx.BOOLEAN()) == DataType.BOOL){
+        if (visit(ctx.BOOLEAN()) == DataType.BOOL) {
             return DataType.BOOL;
         } else {
             throw new IllegalArgumentException("Not a DataType");
         }
     }
-
-    //    @Override
-//    public Object visitOpExpr(GrammarParser.OpExprContext ctx) {
-//        // get left & right number and the operator
-//        int left = (int) visit(ctx.left);
-//        int right = (int) visit(ctx.right);
-//        String op = ctx.op.getText();
-//
-//        // check with which operator a calculation has to be made
-//        switch (op.charAt(0)) {
-//            case '+': return left + right;
-//            case '-': return left - right;
-//            case '*': return left * right;
-//            case '/': return left / right;
-//            case '%': return left % right;
-//            default: throw new IllegalArgumentException("Illegal operator: " + op);
-//        }
-//    }
-//
-//    @Override
-//    public Object visitLogaExpr(GrammarParser.LogaExprContext ctx) {
-//        // get left & right number and the operator
-//        int left = (int) visit(ctx.left);
-//        int right = (int) visit(ctx.right);
-//        String op = ctx.op.getText();
-//
-//        // check with which operator a calculation has to be made
-//        switch (op) {
-//            case "<": return left < right;
-//            case "<=": return left <= right;
-//            case "==": return left == right;
-//            case "!=": return left != right;
-//            case ">=": return left >= right;
-//            case ">": return left > right;
-////            case "AND": return left || right;
-//
-//            default: throw new IllegalArgumentException("Illegal operator: " + op);
-//        }
-//    }
-
-
 
 }
