@@ -1,5 +1,3 @@
-import nl.saxion.cos.generated.GrammarLexer;
-import nl.saxion.cos.generated.GrammarParser;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;

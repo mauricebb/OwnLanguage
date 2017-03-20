@@ -1,6 +1,3 @@
-
-import nl.saxion.cos.generated.GrammarBaseVisitor;
-import nl.saxion.cos.generated.GrammarParser;
 import org.antlr.runtime.tree.TreeVisitor;
 
 import java.util.ArrayList;

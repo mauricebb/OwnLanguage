@@ -102,7 +102,7 @@ boolExpr: BOOLEAN;
 // 1.) rekenkundige expressies
 rekExpr: left=rekExpr op=(PLUS | MINUS | MULT | DIV | MOD) right=rekExpr    #opExpr
        | INT                                                                #atomExpr
-       | variable                                                           #idExpr
+       | ID                                                                 #idExpr
        | '(' rekExpr ')'                                                    #parenExpr
        ;
 
@@ -140,7 +140,7 @@ whileStatement
 	;
 
 // print statement
-printStatement: PRINT expr ';';
+printStatement: PRINT '(' expr ')' ';';
 
 // return statement
 returnStatement: RETURN expr ';';
