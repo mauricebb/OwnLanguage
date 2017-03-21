@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 
 /**
@@ -6,19 +7,10 @@ import java.util.HashMap;
  * Created by maurice_2 on 16-2-2017.
  */
 class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
-    private HashMap<String, DataType> memory;
+    private HashMap<String, String> memory;
 
     InterpretationVisitor() {
         this.memory = new HashMap<>();
-    }
-
-    @Override
-    public DataType visitNormVariable(GrammarParser.NormVariableContext ctx) {
-        String id = ctx.ID().getText();
-        memory.put(id, visit(ctx.dataType()));
-        //int value = super.visit(ctx.dataType());
-        //return super.visitNormVariable(ctx);
-        return null;
     }
 
     @Override
@@ -28,6 +20,8 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
 
     @Override
     public DataType visitExpr(GrammarParser.ExprContext ctx) {
+
+
         return null;
     }
 
@@ -43,6 +37,15 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
         } else {
             throw new IllegalArgumentException("Right is not of Datatype INT");
         }
+    }
+
+    @Override
+    public DataType visitNormVariable(GrammarParser.NormVariableContext ctx) {
+        String id = ctx.ID().getText();
+        if (!memory.containsKey(id)) {
+            memory.put(id, ctx.dataType().getText());
+        }
+        return null;
     }
 
     @Override
@@ -76,35 +79,64 @@ class InterpretationVisitor extends GrammarBaseVisitor<DataType> {
 
     @Override
     public DataType visitPrintStatement(GrammarParser.PrintStatementContext ctx) {
-        if (visit(ctx.expr()) == DataType.BOOL) {
-            return DataType.BOOL;
-        } else if (visit(ctx.expr()) == DataType.INT) {
-            return DataType.INT;
-        } else {
-            throw new IllegalArgumentException("Not a DataType");
-        }
+        return getDatatype(visit(ctx.expr()));
+//        if (visit(ctx.expr()) == DataType.BOOL) {
+//            return DataType.BOOL;
+//        } else if (visit(ctx.expr()) == DataType.INT) {
+//            return DataType.INT;
+//        } else if (visit(ctx.expr()) == DataType.STRING) {
+//            return DataType.STRING;
+//        } else if (visit(ctx.expr()) == null){
+//            return DataType.VOID;
+//        } else {
+//            throw new IllegalArgumentException("Not a DataType");
+//        }
     }
 
     @Override
     public DataType visitReturnStatement(GrammarParser.ReturnStatementContext ctx) {
-        if (visit(ctx.expr()) == DataType.BOOL) {
+        return getDatatype(visit(ctx.expr()));
+    }
+
+
+    @Override
+    public DataType visitCondition(GrammarParser.ConditionContext ctx) {
+
+        return null;
+//        if (visit(ctx.BOOLEAN()) == DataType.BOOL) {
+//            return DataType.BOOL;
+//        } else {
+//            throw new IllegalArgumentException("Not a DataType");
+//        }
+    }
+
+    private DataType getDatatype(DataType type) {
+        if (type == DataType.BOOL) {
             return DataType.BOOL;
-        } else if (visit(ctx.expr()) == DataType.INT) {
+        } else if (type == DataType.INT) {
             return DataType.INT;
-        } else if (visit(ctx.expr()) == DataType.STRING) {
+        } else if (type == DataType.STRING) {
             return DataType.STRING;
+        } else if (type == null) {
+            return DataType.VOID;
         } else {
             throw new IllegalArgumentException("Not a DataType");
         }
     }
 
-    @Override
-    public DataType visitCondition(GrammarParser.ConditionContext ctx) {
-        if (visit(ctx.BOOLEAN()) == DataType.BOOL) {
+    private DataType getTypeFromMemory(String typeText) {
+        if (typeText.equalsIgnoreCase("boolean")) {
             return DataType.BOOL;
-        } else {
-            throw new IllegalArgumentException("Not a DataType");
+        } else if (typeText.equalsIgnoreCase("string")) {
+            return DataType.STRING;
+        } else if (typeText.equalsIgnoreCase("int")) {
+            return DataType.INT;
+        } else if (typeText.equalsIgnoreCase("void")) {
+            return DataType.VOID;
+        } else if (typeText.equalsIgnoreCase("char")) {
+            return DataType.CHAR;
         }
+        throw new IllegalArgumentException();
     }
 
 }

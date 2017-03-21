@@ -61,10 +61,10 @@ WS: [\t\r\n ]+ -> skip;
 
 /*   Grammar rules   */
 // class definitie
-prog: CLASS CLASSNAME '{' (variable)* (method)* '}' END;
+prog: CLASS CLASSNAME '{' (normVariable|arrayVariable)* (method)* '}' END;
 
 // ondersteuning voor variabelen
-variable: normVariable | arrayVariable;
+//variable: normVariable | arrayVariable;
 
 // standaard variabelen
 normVariable: dataType ID (normVariableDeclaration)? ';';
