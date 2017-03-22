@@ -35,13 +35,13 @@ public class Compiler {
         }
 
         // Step 5 Code Generating
-//        try{
-//            CodeGenerator generator = new CodeGenerator();
-//            ArrayList<String> result = generator.visitProg(tree);
-//            System.out.println("Generated: " + Arrays.toString(new ArrayList[]{result}));
-//        } catch (CompileException e){
-//            System.err.println("Error: " + e.getMessage());
-//        }
+        try{
+            CodeGenerator generator = new CodeGenerator();
+            ArrayList<String> result = generator.visitProg(tree);
+            System.out.println("Generated: " + Arrays.toString(new ArrayList[]{result}));
+        } catch (CompileException e){
+            System.err.println("Error: " + e.getMessage());
+        }
     }
 
     public static void main( String[] args ) throws IOException {

@@ -1,6 +1,7 @@
 import org.antlr.runtime.tree.TreeVisitor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -9,7 +10,7 @@ import java.util.HashMap;
  * Created by joost on 15/03/2017.
  */
 class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
-    HashMap<Integer, String> storage;
+    HashMap<String, Integer> storage;
 
     public CodeGenerator() {
         storage = new HashMap<>();
@@ -20,10 +21,26 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
     public ArrayList<String> visitNormVariable(GrammarParser.NormVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String name = ctx.ID().getText();
-        if (ctx.normVariableDeclaration() != null){
+        //System.out.println(name);
+        DataType type = getDataType(ctx.dataType());
+        code.add("iconst_0" + "");
+        code.add("istore");
+        storage.put(name, storage.size());
 
+        if (ctx.normVariableDeclaration() != null){
+            visit(ctx.dataType());
         }
         return code;
+    }
+
+    @Override
+    public ArrayList<String> visitNormVariableDeclaration(GrammarParser.NormVariableDeclarationContext ctx) {
+        return null;
+    }
+
+    private DataType getDataType(GrammarParser.DataTypeContext context){
+        //System.out.println(context.getText());
+        return null;
     }
 
     @Override
@@ -49,12 +66,15 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
             case '%': code.add("irem");break;
             default: throw new IllegalArgumentException("Illegal operator: " + op);
         }
+        System.out.println("code: " + Arrays.toString(new ArrayList[]{code}));
+
         return code;
     }
 
     @Override
     public ArrayList<String> visitLogaExpr(GrammarParser.LogaExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
+        System.out.println(Arrays.toString(new HashMap[]{storage}));
         code.addAll(visit(ctx.left));
         code.addAll(visit(ctx.right));
         String op = ctx.op.getText();
@@ -69,7 +89,22 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
             default: throw new IllegalArgumentException("Illegal operator: " + op);
 //            case "AND": return left || right;
         }
+        System.out.println(Arrays.toString(new ArrayList[]{code}));
         return code;
+    }
+
+    @Override
+    public ArrayList<String> visitIdExpr(GrammarParser.IdExprContext ctx) {
+        ArrayList<String>code = new ArrayList<>();
+        if (storage.containsKey(ctx.ID().getText())){
+            code.add("iload" + storage.get(ctx.ID().getText()));
+        }
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitReturnStatement(GrammarParser.ReturnStatementContext ctx) {
+return null;
     }
 
     private void Log(String prefix, String message){

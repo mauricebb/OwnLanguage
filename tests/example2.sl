@@ -1,4 +1,3 @@
 CLASS TEST {
-    INT i = 1;
-    BOOLEAN a = true;
+    INT i = 2;
 }END
