@@ -38,6 +38,8 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
         return null;
     }
 
+
+
     private DataType getDataType(GrammarParser.DataTypeContext context){
         //System.out.println(context.getText());
         return null;
@@ -47,6 +49,7 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
     public ArrayList<String> visitAtomExpr(GrammarParser.AtomExprContext ctx) {
         ArrayList<String>code = new ArrayList<>();
         code.add("ldc " + ctx.INT().getText());
+        printArray(code);
         return code;
     }
 
@@ -66,8 +69,22 @@ class CodeGenerator extends GrammarBaseVisitor<ArrayList<String>>{
             case '%': code.add("irem");break;
             default: throw new IllegalArgumentException("Illegal operator: " + op);
         }
-        System.out.println("code: " + Arrays.toString(new ArrayList[]{code}));
 
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitLogIdExpr(GrammarParser.LogIdExprContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        code.add("iload " + storage.get(ctx.ID().getText()));
+        printArray(code);
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitExpr(GrammarParser.ExprContext ctx) {
+        ArrayList<String>code = new ArrayList<>();
+        code.add("temp");
         return code;
     }
 
@@ -110,4 +127,9 @@ return null;
     private void Log(String prefix, String message){
         System.out.println(prefix + ": " + message);
     }
+
+    private void printArray(ArrayList<String>code){
+        System.out.println(Arrays.toString(new ArrayList[]{code}));
+    }
+
 }
